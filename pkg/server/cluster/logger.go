@@ -14,14 +14,17 @@ var (
 // Logger implements a bridge between raftlog.Logger and darvaza.org/slog.Logger
 type Logger struct {
 	// Logger is the destination [slog.Logger] for the [raftlog.Logger] entries.
-	Logger slog.Logger
+	Logger slog.Logger `yaml:"-" toml:"-" json:"-"`
+
 	// Fields are fields that should be added to every entry.
-	Fields slog.Fields
+	Fields slog.Fields `yaml:"-" toml:"-" json:"-"`
+
 	// Verbosity is the maximum depth (V level) that should be logged.
-	Verbosity int
+	Verbosity int `yaml:",omitempty" toml:",omitempty" json:",omitempty"`
+
 	// VerbosityField is the label for the optional field to store
 	// the V level.
-	VerbosityField string
+	VerbosityField string `yaml:"-" toml:"-" json:"-"`
 
 	v int
 }
