@@ -2,6 +2,11 @@ module darvaza.org/wilee
 
 go 1.21
 
+replace (
+	darvaza.org/sidecar => ../sidecar
+	darvaza.org/x/tls => ../x/tls
+)
+
 require (
 	darvaza.org/core v0.15.1 // indirect
 	darvaza.org/slog v0.5.14
