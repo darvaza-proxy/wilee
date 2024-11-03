@@ -10,7 +10,7 @@ import (
 
 // Config describes the RAFT cluster's operation
 type Config struct {
-	Context context.Context
+	Context context.Context `yaml:"-" toml:"-" json:"-"`
 	Logger  Logger
 }
 
