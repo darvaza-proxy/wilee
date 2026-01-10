@@ -20,6 +20,11 @@ management following the RFC 8555 protocol.
 This project is under active development. The API and features are subject to
 change.
 
+## Specifications
+
+Wilee implements the ACME protocol and extensions. See [docs/rfc/](docs/rfc/)
+for protocol specifications.
+
 ## Development
 
 **Requirements:** Go 1.23 or later.
