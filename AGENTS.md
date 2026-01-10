@@ -137,6 +137,7 @@ Automated coverage reporting with monorepo support:
 ### Key Design Principles
 
 - **RFC 8555 compliance**: Follow the ACME protocol specification.
+  See [docs/rfc/](docs/rfc/) for specifications and extensions.
 - **Minimal dependencies**: Primarily darvaza.org packages and Go standard
   library.
 - **Interface-driven design**: For extensibility and testability.
