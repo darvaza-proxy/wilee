@@ -132,6 +132,35 @@ Automated coverage reporting with monorepo support:
 - Path mappings for accurate coverage attribution.
 - GitHub Actions workflow automatically uploads coverage data.
 
+### Protocol Buffer Definitions
+
+The `proto/` directory contains Protocol Buffer definitions for Wilee types:
+
+- **ACME types** (`proto/acme/v1/`): RFC 8555 data structures.
+- **buf.build integration**: Linting, building, and registry publishing.
+- **Go code generation**: Outputs to `pkg/specs/`.
+
+Key commands:
+
+```bash
+# Regenerate Go code from protos (via make generate)
+make generate
+
+# Work directly with proto module
+make -C proto lint        # Validate proto files
+make -C proto build       # Build proto binary image
+make -C proto push        # Push to buf.build registry
+make -C proto generate-go OUT=../pkg/specs  # Generate Go code
+```
+
+Configuration files:
+
+- `proto/buf.yaml`: buf module configuration.
+- `proto/buf.gen-go.yaml`: Go generation template.
+
+The `pkg/specs/proto.go` contains a `//go:generate` directive that triggers
+regeneration during `make generate`.
+
 ## Code Architecture
 
 ### Key Design Principles

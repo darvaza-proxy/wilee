@@ -10,7 +10,8 @@ Published as [buf.build/darvaza/wilee](https://buf.build/darvaza/wilee).
 
 ```text
 proto/
-├── buf.yaml
+├── buf.yaml           # buf module configuration
+├── buf.gen-go.yaml    # Go generation template
 ├── Makefile
 └── acme/v1/           # ACME protocol (RFC 8555)
     ├── acme.proto     # Identifier, Directory
@@ -22,6 +23,15 @@ proto/
 ```
 
 ## Usage
+
+### Go Code Generation
+
+```sh
+make generate-go OUT=../pkg/specs
+```
+
+This generates Go code to the specified output directory. The template
+`buf.gen-go.yaml` configures the `buf.build/protocolbuffers/go` plugin.
 
 ### Linting
 
