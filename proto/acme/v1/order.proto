@@ -1,0 +1,53 @@
+// Copyright (c) 2024-2026 Apptly Software Ltd <oss@apptly.co>
+// SPDX-License-Identifier: MIT
+//
+// ACME Order Resource (RFC 8555)
+
+syntax = "proto3";
+
+package acme.v1;
+
+option go_package = "darvaza.org/wilee/pkg/specs/acme/v1";
+
+import "acme/v1/acme.proto";
+import "acme/v1/problem.proto";
+
+// OrderStatus represents the status of an ACME order.
+// RFC 8555 §7.1.6
+enum OrderStatus {
+  // Unspecified order status.
+  ORDER_STATUS_UNSPECIFIED = 0;
+  // Order is awaiting authorisation completion.
+  ORDER_STATUS_PENDING = 1;
+  // All authorisations are complete; order can be finalised.
+  ORDER_STATUS_READY = 2;
+  // Certificate is being issued.
+  ORDER_STATUS_PROCESSING = 3;
+  // Certificate has been issued.
+  ORDER_STATUS_VALID = 4;
+  // Order failed; see error field for details.
+  ORDER_STATUS_INVALID = 5;
+}
+
+// Order represents a certificate order.
+// RFC 8555 §7.1.3
+message Order {
+  // Current status of the order.
+  OrderStatus status = 1;
+  // Timestamp after which the server will consider this order invalid.
+  string expires = 2;
+  // Array of identifier objects that the order pertains to.
+  repeated Identifier identifiers = 3;
+  // Requested value of the notBefore field in the certificate.
+  string not_before = 4;
+  // Requested value of the notAfter field in the certificate.
+  string not_after = 5;
+  // Error that occurred while processing the order, if any.
+  Problem error = 6;
+  // URLs for authorisation objects the client must satisfy.
+  repeated string authorizations = 7;
+  // URL that a CSR must be POSTed to once all authorisations are satisfied.
+  string finalize = 8;
+  // URL for the certificate that has been issued in response to this order.
+  string certificate = 9;
+}

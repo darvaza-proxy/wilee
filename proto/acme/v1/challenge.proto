@@ -1,0 +1,57 @@
+// Copyright (c) 2024-2026 Apptly Software Ltd <oss@apptly.co>
+// SPDX-License-Identifier: MIT
+//
+// ACME Challenge Resource (RFC 8555)
+
+syntax = "proto3";
+
+package acme.v1;
+
+option go_package = "darvaza.org/wilee/pkg/specs/acme/v1";
+
+import "acme/v1/problem.proto";
+
+// ChallengeStatus represents the status of an ACME challenge.
+// RFC 8555 §7.1.6
+enum ChallengeStatus {
+  // Unspecified challenge status.
+  CHALLENGE_STATUS_UNSPECIFIED = 0;
+  // Challenge is available for the client to respond to.
+  CHALLENGE_STATUS_PENDING = 1;
+  // Server is validating the client's response.
+  CHALLENGE_STATUS_PROCESSING = 2;
+  // Challenge was successfully validated.
+  CHALLENGE_STATUS_VALID = 3;
+  // Challenge validation failed.
+  CHALLENGE_STATUS_INVALID = 4;
+}
+
+// ChallengeType specifies the validation method.
+// RFC 8555 §9.7.8
+enum ChallengeType {
+  // Unspecified challenge type.
+  CHALLENGE_TYPE_UNSPECIFIED = 0;
+  // HTTP challenge (§8.3).
+  CHALLENGE_TYPE_HTTP_01 = 1;
+  // DNS challenge (§8.4).
+  CHALLENGE_TYPE_DNS_01 = 2;
+  // TLS-ALPN challenge (RFC 8737).
+  CHALLENGE_TYPE_TLS_ALPN_01 = 3;
+}
+
+// Challenge represents a challenge for identifier validation.
+// RFC 8555 §7.1.5, §8
+message Challenge {
+  // The type of challenge encoded in the object.
+  ChallengeType type = 1;
+  // URL to which a response can be posted.
+  string url = 2;
+  // Current status of the challenge.
+  ChallengeStatus status = 3;
+  // Timestamp when the server validated the challenge.
+  string validated = 4;
+  // Error that occurred while the server was validating the challenge.
+  Problem error = 5;
+  // Random value used to identify this challenge (§8).
+  string token = 6;
+}

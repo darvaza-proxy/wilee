@@ -1,0 +1,8 @@
+version: v2
+
+modules:
+  - name: buf.build/darvaza/wilee
+
+lint:
+  use:
+    - STANDARD

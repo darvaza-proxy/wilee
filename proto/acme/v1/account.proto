@@ -1,0 +1,36 @@
+// Copyright (c) 2024-2026 Apptly Software Ltd <oss@apptly.co>
+// SPDX-License-Identifier: MIT
+//
+// ACME Account Resource (RFC 8555)
+
+syntax = "proto3";
+
+package acme.v1;
+
+option go_package = "darvaza.org/wilee/pkg/specs/acme/v1";
+
+// AccountStatus represents the status of an ACME account.
+// RFC 8555 §7.1.6
+enum AccountStatus {
+  // Unspecified account status.
+  ACCOUNT_STATUS_UNSPECIFIED = 0;
+  // Account is active and can be used.
+  ACCOUNT_STATUS_VALID = 1;
+  // Account was deactivated by the client.
+  ACCOUNT_STATUS_DEACTIVATED = 2;
+  // Account was revoked by the server.
+  ACCOUNT_STATUS_REVOKED = 3;
+}
+
+// Account represents an ACME account.
+// RFC 8555 §7.1.2
+message Account {
+  // Current status of the account.
+  AccountStatus status = 1;
+  // Contact URLs (e.g., mailto:) for the account holder.
+  repeated string contact = 2;
+  // Indicates the client's agreement with the terms of service.
+  bool terms_of_service_agreed = 3;
+  // URL from which the list of orders for this account can be fetched.
+  string orders = 4;
+}

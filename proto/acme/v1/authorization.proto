@@ -1,0 +1,47 @@
+// Copyright (c) 2024-2026 Apptly Software Ltd <oss@apptly.co>
+// SPDX-License-Identifier: MIT
+//
+// ACME Authorization Resource (RFC 8555)
+
+syntax = "proto3";
+
+package acme.v1;
+
+option go_package = "darvaza.org/wilee/pkg/specs/acme/v1";
+
+import "acme/v1/acme.proto";
+import "acme/v1/challenge.proto";
+
+// AuthorizationStatus represents the status of an ACME authorisation.
+// RFC 8555 §7.1.6
+enum AuthorizationStatus {
+  // Unspecified authorisation status.
+  AUTHORIZATION_STATUS_UNSPECIFIED = 0;
+  // Authorisation is awaiting challenge completion.
+  AUTHORIZATION_STATUS_PENDING = 1;
+  // A challenge was successfully completed.
+  AUTHORIZATION_STATUS_VALID = 2;
+  // The client failed to complete a challenge.
+  AUTHORIZATION_STATUS_INVALID = 3;
+  // The client deactivated the authorisation.
+  AUTHORIZATION_STATUS_DEACTIVATED = 4;
+  // The authorisation has expired.
+  AUTHORIZATION_STATUS_EXPIRED = 5;
+  // The server revoked the authorisation.
+  AUTHORIZATION_STATUS_REVOKED = 6;
+}
+
+// Authorization represents an authorisation for an identifier.
+// RFC 8555 §7.1.4
+message Authorization {
+  // The identifier that the account is authorised to represent.
+  Identifier identifier = 1;
+  // Current status of the authorisation.
+  AuthorizationStatus status = 2;
+  // Timestamp after which the server will consider this authorisation invalid.
+  string expires = 3;
+  // Array of challenge objects that the client can fulfil to prove control.
+  repeated Challenge challenges = 4;
+  // Indicates this authorisation is for wildcard DNS identifier.
+  bool wildcard = 5;
+}

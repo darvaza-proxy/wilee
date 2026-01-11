@@ -29,6 +29,7 @@
     "stdlib",
     "stretchr",
     "subpackages",
+    "subproblem",
     "wilee"
   ],
   "ignorePaths": [

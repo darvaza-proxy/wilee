@@ -1,0 +1,62 @@
+// Copyright (c) 2024-2026 Apptly Software Ltd <oss@apptly.co>
+// SPDX-License-Identifier: MIT
+//
+// ACME Core Types (RFC 8555)
+
+syntax = "proto3";
+
+package acme.v1;
+
+option go_package = "darvaza.org/wilee/pkg/specs/acme/v1";
+
+// IdentifierType specifies the type of identifier.
+// RFC 8555 §9.7.7
+enum IdentifierType {
+  // Unspecified identifier type.
+  IDENTIFIER_TYPE_UNSPECIFIED = 0;
+  // DNS domain name.
+  IDENTIFIER_TYPE_DNS = 1;
+  // IP address (RFC 8738).
+  IDENTIFIER_TYPE_IP = 2;
+}
+
+// Identifier represents an identifier for certificate issuance.
+// RFC 8555 §9.7.7
+message Identifier {
+  // The type of identifier (e.g., dns, ip).
+  IdentifierType type = 1;
+  // The identifier itself (e.g., domain name or IP address).
+  string value = 2;
+}
+
+// DirectoryMeta contains metadata about an ACME server.
+// RFC 8555 §7.1.1
+message DirectoryMeta {
+  // URL identifying the current terms of service.
+  string terms_of_service = 1;
+  // URL locating a website providing more information about the CA.
+  string website = 2;
+  // Hostnames which the ACME server recognises as referring to itself.
+  repeated string caa_identities = 3;
+  // Indicates whether an external account is required for newAccount.
+  bool external_account_required = 4;
+}
+
+// Directory provides URLs for ACME resources.
+// RFC 8555 §7.1.1
+message Directory {
+  // URL for requesting a fresh nonce.
+  string new_nonce = 1;
+  // URL for creating a new account.
+  string new_account = 2;
+  // URL for submitting a new order.
+  string new_order = 3;
+  // URL for pre-authorisation requests (optional).
+  string new_authz = 4;
+  // URL for certificate revocation requests.
+  string revoke_cert = 5;
+  // URL for account key rollover.
+  string key_change = 6;
+  // Additional server metadata.
+  DirectoryMeta meta = 7;
+}
