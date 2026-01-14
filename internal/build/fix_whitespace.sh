@@ -25,30 +25,73 @@ set -eu
 JOBS="${JOBS:-4}"
 FILES_PER_JOB="${FILES_PER_JOB:-4}"
 
+# get_bytes FILE COUNT
+# COUNT > 0: first COUNT bytes (head)
+# COUNT < 0: last -COUNT bytes (tail)
+# Outputs hex string
+get_bytes() {
+	local file="$1" count="$2"
+	local bytes
+
+	case "$count" in
+	-*)
+		bytes=$(tail -c "${count#-}" "$file") ;;
+	*)
+		bytes=$(head -c "$count" "$file") ;;
+	esac
+
+	printf '%s' "$bytes" | od -An -tx1 | tr -d ' \t\n'
+}
+
+# quote_arg STRING
+# Outputs STRING wrapped in single quotes with embedded quotes escaped
+quote_arg() {
+	printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
+}
+
+# filter_file FILE COMMAND [ARGS...]
+# Applies filter command to file in-place, preserving permissions
+filter_file() {
+	local file="$1" tmp
+	shift
+
+	tmp=$(mktemp "fix_whitespace.XXXXXX")
+	"$@" < "$file" > "$tmp"
+	cat "$tmp" > "$file"
+	rm "$tmp"
+}
+
 # Function to fix a single file
 fix_file() {
-	local file="$1" last_byte
+	local file="$1"
+	local first_bytes last_content keep_bytes
 
 	# Skip if not a regular file
 	[ -f "$file" ] || return 0
 
-	# Remove trailing whitespace
+	# Remove UTF-8 BOM if present (EF BB BF)
+	first_bytes=$(get_bytes "$file" 3)
+	[ "$first_bytes" != "efbbbf" ] || filter_file "$file" tail -c +4
+
+	# Remove trailing whitespace from each line
 	${SED:-sed} -i 's/[[:space:]]*$//' "$file"
 
 	# Leave empty files alone
 	[ -s "$file" ] || return 0
 
-
-	# Check last byte to see if file ends with newline
-	# Use od to get hexadecimal representation of last byte
-	last_byte=$(tail -c 1 "$file" | od -An -tx1 | tr -d ' \t')
-
-	# If last byte is not newline (0x0a), add one
-	if [ "0a" != "$last_byte" ]; then
-		printf '\n' >> "$file"
-	elif [ "$(wc -c < "$file")" -eq 1 ]; then
-		# File only contains a newline, truncate it
+	# Remove trailing empty lines
+	last_content=$(grep -n . "$file" | tail -1 | cut -d: -f1) || last_content=""
+	if [ -z "$last_content" ]; then
+		# No content, truncate
 		: > "$file"
+		return 0
+	fi
+	keep_bytes=$(head -n "$last_content" "$file" | wc -c)
+	dd if=/dev/null of="$file" bs=1 seek="$keep_bytes" 2>/dev/null
+
+	# Ensure file ends with exactly one newline
+	if [ "$(wc -l < "$file")" -lt "$last_content" ]; then
+		printf '\n' >> "$file"
 	fi
 }
 
@@ -65,7 +108,7 @@ run_find() {
 			;;
 		*)
 			# Add path with proper escaping for spaces and special chars
-			quoted=$(printf '%s' "$1" | sed -e "s/'/'\\\\''/g" -e "s/^/'/" -e "s/$/'/")
+			quoted=$(quote_arg "$1")
 			paths="${paths:+$paths }$quoted"
 			shift
 			;;

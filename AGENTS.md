@@ -63,8 +63,10 @@ make codecov
 
 The `internal/build/fix_whitespace.sh` script automatically:
 
+- Removes UTF-8 BOM if present.
 - Removes trailing whitespace from all text files.
-- Ensures files end with a newline.
+- Removes trailing empty lines.
+- Ensures files end with exactly one newline.
 - Excludes binary files and version control directories.
 - Integrates with `make fmt` for non-Go files.
 - Supports both directory scanning and explicit file arguments.
