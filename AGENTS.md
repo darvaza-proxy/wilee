@@ -73,7 +73,7 @@ The `internal/build/fix_whitespace.sh` script automatically:
 
 The build system includes automatic Markdown linting:
 
-- Detects markdownlint-cli via pnpx.
+- Detects markdownlint-cli via `pnpm dlx`.
 - Configuration in `internal/build/markdownlint.json`.
 - 80-character line limits and strict formatting rules.
 - Selective HTML allowlist (comments, br, kbd, etc.).
@@ -83,7 +83,7 @@ The build system includes automatic Markdown linting:
 
 Spell checking for both Markdown and Go source files:
 
-- Detects cspell via pnpx.
+- Detects cspell via `pnpm dlx`.
 - British English configuration in `internal/build/cspell.json`.
 - Available via `check-spelling` target.
 - Integrated into `make tidy`.
@@ -94,7 +94,7 @@ Spell checking for both Markdown and Go source files:
 
 Grammar and style checking for Markdown files:
 
-- Detects LanguageTool via pnpx.
+- Detects LanguageTool via `pnpm dlx`.
 - British English configuration in `internal/build/languagetool.cfg`.
 - Available via `make check-grammar` target.
 - Checks for missing articles, punctuation, and proper hyphenation.
@@ -103,7 +103,7 @@ Grammar and style checking for Markdown files:
 
 Shell script analysis for all `.sh` files:
 
-- Detects shellcheck via pnpx.
+- Detects shellcheck via `pnpm dlx`.
 - Available via `check-shell` target.
 - Integrated into `make tidy`.
 - Uses inline disable directives for SC1007 (empty assignments) and SC3043
@@ -338,6 +338,6 @@ When LanguageTool reports issues:
    - Use `GOTEST_FLAGS` to pass additional flags to tests.
 
 4. **Linting tool detection**:
-   - Tools are auto-detected via `pnpx`.
+   - Tools are auto-detected via `pnpm dlx`.
    - If tools aren't found, they're replaced with `true` (no-op).
    - Install tools globally with `pnpm install -g <tool>` if needed.
